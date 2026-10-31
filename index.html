@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bufete Popular - Gestión de Expedientes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Bufete Popular</h1>
+    <p>Sistema de Gestión e Historial de Expedientes Legales</p>
+  </header>
+
+  <main>
+    <!-- FORMULARIO DE APERTURA (3.1) -->
+    <section class="card">
+      <h2>Apertura de Expediente</h2>
+      
+      <div id="form-error" class="alert-error">
+        Por favor complete todos los campos obligatorios (*). No se permiten campos vacíos.
+      </div>
+
+      <form id="expediente-form">
+        <div class="form-group">
+          <label for="solicitante">Solicitante (Alias) *</label>
+          <input type="text" id="solicitante" placeholder="Ej. JuanPerez88">
+        </div>
+
+        <div class="form-group">
+          <label for="responsable">Asesor Responsable *</label>
+          <input type="text" id="responsable" placeholder="Ej. Licda. María López">
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoría (Opcional)</label>
+          <select id="categoria">
+            <option value="">-- Seleccionar --</option>
+            <option value="Civil">Civil</option>
+            <option value="Familiar">Familiar</option>
+            <option value="Laboral">Laboral</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción Breve del Asunto *</label>
+          <textarea id="descripcion" rows="3" placeholder="Detalles iniciales del caso..."></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Registrar Expediente</button>
+      </form>
+    </section>
+
+    <!-- BÚSQUEDA Y LISTADO (3.2) -->
+    <section class="card">
+      <h2>Listado de Expedientes</h2>
+
+      <div class="search-bar form-group">
+        <input type="text" id="search-input" placeholder="Buscar por ID o Nombre/Alias..." onkeyup="filtrarExpedientes()">
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Persona (Alias)</th>
+              <th>Responsable</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="expedientes-tbody">
+          </tbody>
+        </table>
+        <div id="no-results" class="no-results">
+          No se encontraron expedientes que coincidan con la búsqueda.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL / VISTA DE DETALLE, SEGUIMIENTO, CIERRE Y REAPERTURA -->
+  <div id="detalle-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="cerrarModal()">&times;</button>
+      
+      <h2 id="modal-titulo">Expediente #EXP-000</h2>
+      
+      <div id="modal-info" style="margin-bottom: 16px;"></div>
+
+      <hr class="section-divider">
+
+      <h3>Acciones y Seguimiento</h3>
+      
+      <!-- CONTENEDOR PARA SEGUIMIENTO Y CIERRE (SI NO ESTÁ CERRADO) -->
+      <div id="acciones-container" style="margin-top: 12px;">
+        <div class="form-group">
+          <label for="nueva-actividad">Agregar Nueva Actividad *</label>
+          <textarea id="nueva-actividad" rows="2" placeholder="Describa la actividad realizada..."></textarea>
+          <button class="btn btn-secondary" onclick="agregarActividad()" id="btn-actividad" style="margin-top: 6px;">Guardar Actividad</button>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <button class="btn" id="btn-estado-seguimiento" onclick="cambiarAEnSeguimiento()">Pasar a 'En seguimiento'</button>
+        </div>
+
+        <hr class="section-divider">
+
+        <div class="form-group" style="background-color: #fff5f5; padding: 12px; border-radius: 6px; border: 1px solid #fed7d7;">
+          <label for="motivo-cierre" style="color: var(--danger);">Motivo de Cierre *</label>
+          <input type="text" id="motivo-cierre" placeholder="Escriba la razón de cierre...">
+          <button class="btn btn-danger" id="btn-cerrar-expediente" onclick="cerrarExpediente()" style="margin-top: 8px; width: 100%;">Cerrar Expediente</button>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR PARA REAPERTURA (REQUISITO C.1 PARTE 2) -->
+      <div id="reapertura-container" style="display: none; background-color: #f0fdf4; padding: 12px; border-radius: 6px; border: 1px solid #bbf7d0; margin-top: 12px;">
+        <p style="color: #166534; font-size: 0.85rem; margin-bottom: 8px;">Este expediente se encuentra CERRADO. Para retomar el seguimiento ingrese un motivo de reapertura.</p>
+        <label for="motivo-reapertura" style="color: var(--secondary); font-weight: bold;">Motivo de Reapertura *</label>
+        <input type="text" id="motivo-reapertura" placeholder="Escriba la razón para reabrir el expediente..." style="margin-top: 6px;">
+        <button class="btn btn-warning" id="btn-reabrir-expediente" onclick="reabrirExpediente()" style="margin-top: 8px; width: 100%;">Reabrir Expediente (Pasar a 'En seguimiento')</button>
+      </div>
+
+      <hr class="section-divider">
+
+      <h3>Historial Cronológico</h3>
+      <div id="timeline-container" class="timeline"></div>
+    </div>
+  </div>
+
+  <script src="logica.js"></script>
+</body>
+</html>
